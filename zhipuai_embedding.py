@@ -1,5 +1,8 @@
 from typing import List
 from langchain_core.embeddings import Embeddings
+import os
+from dotenv import load_dotenv
+
 
 class ZhipuAIEmbeddings(Embeddings):
     """`Zhipuai Embeddings` embedding models."""
@@ -15,7 +18,16 @@ class ZhipuAIEmbeddings(Embeddings):
             values (Dict): 包含配置信息的字典。如果环境中有zhipuai库，则将返回实例化的ZhipuAI类；否则将报错 'ModuleNotFoundError: No module named 'zhipuai''.
         """
         from zhipuai import ZhipuAI
-        self.client = ZhipuAI()
+         # 加载 .env 文件
+        load_dotenv()
+
+        # 获取 API Key
+        api_key = os.getenv("ZHIPUAI_API_KEY")
+        if not api_key:
+            raise ValueError("ZHIPUAI_API_KEY 未设置，请检查 .env 文件或环境变量")
+        
+        # 初始化 ZhipuAI 客户端
+        self.client = ZhipuAI(api_key=api_key)
     
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         """
