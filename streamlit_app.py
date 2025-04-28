@@ -9,15 +9,16 @@ import sys
 from zhipuai_embedding import ZhipuAIEmbeddings
 from langchain_community.vectorstores import Chroma
 
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 
 def get_retriever():
     # 定义 Embeddings
     embedding = ZhipuAIEmbeddings()
     # 向量数据库持久化路径
     persist_directory = 'data_base/vector_db/chroma'
+    __import__('pysqlite3')
+    import sys
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
     # 自动创建目录（如果不存在）
     if not os.path.exists(persist_directory):
         os.makedirs(persist_directory)
