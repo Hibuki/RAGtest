@@ -1,5 +1,5 @@
 import streamlit as st
-from langchain_openai import ChatOpenAI
+from zhipuai_llm import ZhipuaiLLM
 import os
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -26,7 +26,8 @@ def combine_docs(docs):
 
 def get_qa_history_chain():
     retriever = get_retriever()
-    llm = ChatOpenAI(model_name="gpt-4o", temperature=0)
+    ZhipuaiLLM.model_rebuild()
+    llm = ZhipuaiLLM(model_name="glm-4-plus", temperature=0.1, api_key=api_key)
     condense_question_system_template = (
         "请根据聊天记录总结用户最近的问题，"
         "如果没有多余的聊天记录则返回用户的问题。"
