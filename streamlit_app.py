@@ -12,6 +12,43 @@ from dotenv import load_dotenv
 load_dotenv()
 api_key = os.getenv("ZHIPUAI_API_KEY")
 
+file_paths = []
+folder_path = 'knowledge_db'
+for root, dirs, files in os.walk(folder_path):
+    for file in files:
+        file_path = os.path.join(root, file)
+        file_paths.append(file_path)
+print(file_paths[:3])
+
+from langchain_community.document_loaders import PyMuPDFLoader
+from langchain_community.document_loaders import UnstructuredMarkdownLoader
+
+# 遍历文件路径并把实例化的loader存放在loaders里
+loaders = []
+
+for file_path in file_paths:
+    file_type = file_path.split('.')[-1]
+    if file_type == 'pdf':
+        loaders.append(PyMuPDFLoader(file_path))
+    elif file_type == 'md':
+        loaders.append(UnstructuredMarkdownLoader(file_path))
+
+# 下载文件并存储到text
+texts = []
+
+for loader in loaders: texts.extend(loader.load())
+text = texts[1]
+
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+# 切分文档
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500, chunk_overlap=50)
+
+split_docs = text_splitter.split_documents(texts)
+
+
+
 def get_retriever():
     # 定义 Embeddings
     embedding = ZhipuAIEmbeddings()
@@ -24,9 +61,11 @@ def get_retriever():
         os.makedirs(persist_directory)
     # 加载数据库
     vectordb = Chroma(
+        documents=split_docs,
         persist_directory=persist_directory,
         embedding_function=embedding
     )
+
     return vectordb.as_retriever()
 
 def combine_docs(docs):
