@@ -89,7 +89,7 @@ def gen_response(chain, input, chat_history):
 
 # Streamlit 应用程序界面
 def main():
-    st.markdown('### 🦜🔗 姐的处女AI-chatbot')
+    st.markdown('### 🦜🔗 AI-chatbot')
 
     # 用于跟踪对话历史
     if "messages" not in st.session_state:
