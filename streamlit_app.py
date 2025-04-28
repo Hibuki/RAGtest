@@ -5,7 +5,6 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableBranch, RunnablePassthrough
 import sys
-# sys.path.append("notebook/C3 搭建知识库") # 将父目录放入系统路径中
 from zhipuai_embedding import ZhipuAIEmbeddings
 from langchain_community.vectorstores import Chroma
 
@@ -19,7 +18,6 @@ def get_retriever():
     # 向量数据库持久化路径
     persist_directory = 'data_base/vector_db/chroma'
     __import__('pysqlite3')
-    import sys
     sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
     # 自动创建目录（如果不存在）
     if not os.path.exists(persist_directory):
