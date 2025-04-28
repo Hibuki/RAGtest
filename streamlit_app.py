@@ -9,7 +9,9 @@ import sys
 from zhipuai_embedding import ZhipuAIEmbeddings
 from langchain_community.vectorstores import Chroma
 
-
+from dotenv import load_dotenv
+load_dotenv()
+api_key = os.getenv("ZHIPUAI_API_KEY")
 
 def get_retriever():
     # 定义 Embeddings
